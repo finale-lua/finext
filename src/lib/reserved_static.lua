@@ -2,6 +2,18 @@ local utils = require("lib.utils")
 local helper = require("lib.helper")
 local reserved_static = {}
 
+function reserved_static.__parent(class)
+    return class.Parent
+end
+
+function reserved_static.__base(class)
+    return class.Base
+end
+
+function reserved_static.__init(class)
+    return class.Init
+end
+
 function reserved_static.__class(class)
     return class.Methods and utils.copy_table(class.Methods) or {}
 end
