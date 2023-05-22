@@ -65,7 +65,7 @@ end
 ---@param tryfunczzz function Function to call.
 ---@param ... any Arguments to the function.
 ---@return nil Prevents tail call optimisation.
----@retuen any ... Any return values from the function.
+---@return any ... Any return values from the function.
 local function catch_error(tryfunczzz, ...)
     return nil, tryfunczzz(...)
 end
@@ -128,7 +128,7 @@ local function message_handler(original_msg)
         local level_rewriters = utils.create_lookup(utils.split(debug.getinfo(catch_level + 2, "n").name, "_"))
         -- Call order: custom rewriters must come first.
         -- rethrow is omitted since that is handled by this function (and all errors are rethrown)
-        for _, v in ipairs({"custom", "argnum", "rename"}) do
+        for _, v in ipairs({"custom", "rename", "argnum"}) do
             if level_rewriters[v] then
                 msg = rewriters[v](msg, level and level + 1 or level, level == catch_level)
             end
@@ -186,7 +186,7 @@ end
 ---@param tryfunczzz function The function to call.
 ---@param ... any Argumenta to pass to the function.
 ---@return any ... Any returned values from the funxtion.
-for _, v in ipairs({"rethrow_custom", "rethrow_rename_argnum_custom"}) do
+for _, v in ipairs({"rethrow_custom", "rethrow_custom_rename_argnum"}) do
     errors[v] = function(custom_rewriters, tryfunczzz, ...)
         return result_handler(xpcall(catch_error, message_handler, tryfunczzz, ...))
     end
