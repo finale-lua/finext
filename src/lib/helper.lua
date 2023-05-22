@@ -1,5 +1,17 @@
 local helper = {}
 
+helper.reserved_instance = {
+    ExtClassName = function(class)
+        return class.ClassName
+    end,
+    ExtParent = function(class)
+        return class.Parent
+    end,
+    ExtBase = function(class)
+        return classes.Base
+    end,
+}
+
 ---Determines if a string is an FC* class name.
 ---@param class_name string
 ---@return boolean
