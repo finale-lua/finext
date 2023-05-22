@@ -159,4 +159,20 @@ function helper.get_class_name(object)
     return class_name
 end
 
+---Determines if a property name is valid.
+---@param name string
+---@return boolean
+---@return string? If not valid, this will contain an error message.
+function helper.is_valid_property_name(name)
+    if type(name) ~= "string" then
+        return false, "Extension method and property names must be strings"
+    elseif name:match("^Ext%u") then
+        return false, "Extension methods and properties cannot begin with 'Ext'"
+    elseif name == "__" or helper.reserved_instance[name] or helper.reserved_static[name] then
+        return false, "'" .. name .. "' is a reserved name and cannot be used for properties or methods"
+    end
+
+    return true
+end
+
 return helper
