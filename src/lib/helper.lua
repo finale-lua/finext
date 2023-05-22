@@ -1,5 +1,27 @@
 local helper = {}
 
+local function create_reflection(class, attr)
+    local t = {}
+    if class[attr] then
+        for k, v in pairs(class[attr]) do
+            t[k] = v
+        end
+    end
+    return t
+end
+
+local function create_property_reflection(class, attr)
+    local t = {}
+    if class.Properties then
+        for k, v in pairs(class.Properties) do
+            if v[attr] then
+                t[k] = v[attr]
+            end
+        end
+    end
+    return t
+end
+
 helper.reserved_instance = {
     ExtClassName = function(class)
         return class.ClassName
@@ -9,6 +31,36 @@ helper.reserved_instance = {
     end,
     ExtBase = function(class)
         return classes.Base
+    end,
+}
+
+local reserved_static = {
+    __parent = function(class)
+        return class.Parent
+    end,
+    __base = function(class)
+        return class.Base
+    end,
+    __init = function(class)
+        return class.Init
+    end,
+    __class = function(class)
+        return create_reflection(class, "Methods")
+    end,
+    __static = function(class)
+        return create_reflection(class, "StaticMethods")
+    end,
+    __propget = function(class)
+        return create_property_reflection(class, "Get")
+    end,
+    __propset = function(class)
+        return create_property_reflection(class, "Set")
+    end,
+    __disabled = function(class)
+        return create_reflection(class, "Disabled")
+    end,
+    __metamethods = function(class)
+        return create_reflection(class, "MetaMethods")
     end,
 }
 
@@ -105,56 +157,6 @@ function helper.get_class_name(object)
     end
 
     return class_name
-end
-
-local function create_method_reflection(class, attr)
-    local t = {}
-    if class[attr] then
-        for k, v in pairs(class[attr]) do
-            t[k] = v
-        end
-    end
-    return t
-end
-
-local function create_property_reflection(class, attr)
-    local t = {}
-    if class.Properties then
-        for k, v in pairs(class.Properties) do
-            if v[attr] then
-                t[k] = v[attr]
-            end
-        end
-    end
-    return t
-end
-
----Creates a method reflection table in the style of finale[class_name].__class
----@param class table
----@return {[string]: function}
-function helper.create_method_reflection(class)
-    return create_method_reflection(class, "Methods")
-end
-
----Creates a static method reflection table in the style of finale[class_name].__static
----@param class table
----@return {[string]: function}
-function helper.create_static_method_reflection(class)
-    return create_method_reflection(class, "StaticMethods")
-end
-
----Creates a property getter reflection table in the style of finale[class_name].__propget
----@param classes table
----@return {[string]: function}
-function helper.create_getter_reflection(class)
-    return create_property_reflection(class, "Get")
-end
-
----Creates a property setter reflection table in the style of finale[class_name].__propset
----@param classes table
----@return {[string]: function}
-function helper.create_setter_reflection(class)
-    return create_property_reflection(class, "Set")
 end
 
 return helper
