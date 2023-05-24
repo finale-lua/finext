@@ -72,7 +72,7 @@ local function message_handler(original_msg)
             msg_traceback = string.gsub(debug.traceback(), "[^\n]+\n", "", 2)
         end
 
-        -- Remove capture and xpcall from stack
+        -- Remove catch_error and xpcall from stack
         if msg_traceback then
             for i = catch_level, catch_level + 1 do
                 local info = debug.getinfo(i, "lS")
@@ -85,6 +85,9 @@ local function message_handler(original_msg)
     if opt.custom then
         for _, v in ipairs(opt.custom) do
             msg = v(msg, level + 1)
+            if msg == nil then
+                return
+            end
         end
     end
 
@@ -118,7 +121,7 @@ end
 ---@param ... xpcall return values
 ---@return any ...
 local function result_handler(success, error_msg, ...)
-    if not success then
+    if not success and error_msg then
         error(table.unpack(error_msg))
     end
 
