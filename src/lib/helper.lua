@@ -1,6 +1,10 @@
 local helper = {}
 
-local function create_reflection(class, attr)
+---Creates a reflection table of a class attribute
+---@param class table
+---@param attr string
+---@return {[string]: any}
+function helper.create_reflection(class, attr)
     local t = {}
     if class[attr] then
         for k, v in pairs(class[attr]) do
@@ -10,7 +14,11 @@ local function create_reflection(class, attr)
     return t
 end
 
-local function create_property_reflection(class, attr)
+---Creates a reflection table of class properties
+---@param class table
+---@param attr string "Get" or "Set"
+---@return {[string]: any}
+function helper.create_property_reflection(class, attr)
     local t = {}
     if class.Properties then
         for k, v in pairs(class.Properties) do
@@ -21,48 +29,6 @@ local function create_property_reflection(class, attr)
     end
     return t
 end
-
-helper.reserved_instance = {
-    ExtClassName = function(class)
-        return class.ClassName
-    end,
-    ExtParent = function(class)
-        return class.Parent
-    end,
-    ExtBase = function(class)
-        return classes.Base
-    end,
-}
-
-local reserved_static = {
-    __parent = function(class)
-        return class.Parent
-    end,
-    __base = function(class)
-        return class.Base
-    end,
-    __init = function(class)
-        return class.Init
-    end,
-    __class = function(class)
-        return create_reflection(class, "Methods")
-    end,
-    __static = function(class)
-        return create_reflection(class, "StaticMethods")
-    end,
-    __propget = function(class)
-        return create_property_reflection(class, "Get")
-    end,
-    __propset = function(class)
-        return create_property_reflection(class, "Set")
-    end,
-    __disabled = function(class)
-        return create_reflection(class, "Disabled")
-    end,
-    __metamethods = function(class)
-        return create_reflection(class, "MetaMethods")
-    end,
-}
 
 ---Determines if a string is an FC* class name.
 ---@param class_name string
@@ -157,22 +123,6 @@ function helper.get_class_name(object)
     end
 
     return class_name
-end
-
----Determines if a property name is valid.
----@param name string
----@return boolean
----@return string? If not valid, this will contain an error message.
-function helper.is_valid_property_name(name)
-    if type(name) ~= "string" then
-        return false, "Extension method and property names must be strings"
-    elseif name:match("^Ext%u") then
-        return false, "Extension methods and properties cannot begin with 'Ext'"
-    elseif name == "__" or helper.reserved_instance[name] or helper.reserved_static[name] then
-        return false, "'" .. name .. "' is a reserved name and cannot be used for properties or methods"
-    end
-
-    return true
 end
 
 return helper
