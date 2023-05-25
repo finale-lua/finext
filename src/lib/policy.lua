@@ -25,19 +25,19 @@ local reserved_static = {
         return class.Init
     end,
     __class = function(class)
-        return create_reflection(class, "Methods")
+        return helper.create_reflection(class, "Methods")
     end,
     __static = function(class)
-        return create_reflection(class, "StaticMethods")
+        return helper.create_reflection(class, "StaticMethods")
     end,
     __propget = function(class)
-        return create_property_reflection(class, "Get")
+        return helper.create_property_reflection(class, "Get")
     end,
     __propset = function(class)
-        return create_property_reflection(class, "Set")
+        return helper.create_property_reflection(class, "Set")
     end,
     __disabled = function(class)
-        return create_reflection(class, "Disabled")
+        return helper.create_reflection(class, "Disabled")
     end,
     __metamethods = function(class)
         return create_reflection(class, "MetaMethods")
