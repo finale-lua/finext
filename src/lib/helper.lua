@@ -1,3 +1,4 @@
+local utils = require("lib.utils")
 local helper = {}
 
 ---Creates a reflection table of a class attribute
@@ -5,13 +6,7 @@ local helper = {}
 ---@param attr string
 ---@return {[string]: any}
 function helper.create_reflection(class, attr)
-    local t = {}
-    if class[attr] then
-        for k, v in pairs(class[attr]) do
-            t[k] = v
-        end
-    end
-    return t
+    return class[attr] and utils.copy_table_no_meta(class[attr]) or {}
 end
 
 ---Creates a reflection table of class properties
