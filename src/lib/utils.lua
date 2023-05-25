@@ -16,6 +16,21 @@ function utils.copy_table(t)
     return copy
 end
 
+---If the value is a table, a deep copy is returned (without metatables). Otherwise, the original value is returned.
+---@generic T
+---@param t T
+---@return T
+function utils.copy_table_no_meta(t)
+    if type(t) ~= "table" then
+        return t
+    end
+    local copy = {}
+    for k, v in pairs(t) do
+        copy[utils.copy_table(k)] = utils.copy_table(v)
+    end
+    return copy
+end
+
 ---Splits a string by another string.
 ---@param str string
 ---@param separator? string Pattern. Defaults to any space character (%s)
