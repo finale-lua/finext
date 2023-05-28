@@ -5,20 +5,6 @@ local function error_suffix(path, sub_path)
     return " (" .. path .. sub_path .. ")"
 end
 
-local function create_proxy(t, path)
-    return setmetatable({}, {
-        __index = function(_, k)
-            return t[k]
-        end,
-        __newindex = function(_, k, v)
-            if t[k] ~= nil then
-                error("Duplicate entry, the key '" .. tostring(k) .. "' already exists and cannot be overwritten" .. error_suffix(path, k), 0)
-            end
-            t[k] = v
-        end,
-    })
-end
-
 local require_error_handler = errors.create_handler({
     custom = function(msg)
         if msg:match("module '[^']-' not found") then
@@ -85,8 +71,16 @@ function loaders.load_into(t, mod_name, paths, parser, validator, exclude_extern
                 if not is_valid then
                     error(err_msg .. error_suffix(full_path, err_path), 0)
                 end
+                local parsed = parser(result)
+                for k, v in pairs(parsed) do
+                    if t[k] ~= nil then
+                        error("Duplicate entry, the key '" .. tostring(k) .. "' already exists and cannot be overwritten" .. error_suffix(path, k), 0)
+                    end
+                    t[k] = v
+                end
+            else
+                utils.copy_into(parser(result), t)
             end
-            parser(result, create_proxy(t, full_path))
         end
     end
 
