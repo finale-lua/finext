@@ -1,7 +1,9 @@
-return function(result, target)
-    for k, v in pairs(result) do
-        for kk, vv in pairs(v) do
-            target[k .. "_" .. kk] = vv
+return function(result)
+    local t = {}
+    for group, constants in pairs(result) do
+        for constant, value in pairs(constants) do
+            t[group .. "_" .. constant] = value
         end
     end
+    return t
 end
