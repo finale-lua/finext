@@ -1,19 +1,17 @@
-local function err_type(name, expected, given)
-    return name .. " must be a " .. expected .. ", " .. given .. " given"
-end
+local errors = require("lib.errors")
 
 return function(result)
     if type(result) ~= "table" then
-        return false, err_type("Utils definition", "table", type(result))
+        return false, errors.bad_value_msg("Utils definition", "table", type(result))
     end
 
     for k, v in pairs(result) do
         if type(k) ~= "string" then
-            return false, err_type("Utils keys", "string", type(k)), tostring(k)
+            return false, errors.bad_value_msg("Utils keys", "string", type(k)), tostring(k)
         end
 
         if type(v) ~= "function" then
-            return false, err_type("Utils functions", "function", type(v)), k
+            return false, errors.bad_value_msg("Utils functions", "function", type(v)), k
         end
     end
 
