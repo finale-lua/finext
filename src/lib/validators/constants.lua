@@ -1,23 +1,21 @@
+local errors = require("lib.errors")
+
 local function is_valid_name(name)
     return string.match(name, "^%u+") or string.match(name, "^%u[%u_]-%u$") and true or false
 end
 
-local function err_type(name, expected, given)
-    return name .. " must be a " .. expected .. ", " .. given .. " given"
-end
-
-local function err_name(name_type, name)
-    return "Constant " .. name_type .. " can only contain uppercase letters and underscores and cannot start or end with an underscore, '" .. name .. "' given"
+local function err_name(name, given)
+    return errors.bad_value_msg("Constant " .. name_type, "string containing uppercase letters and underscores and cannot start or end with an underscore", given)
 end
 
 return function(result)
     if type(result) ~= "table" then
-        return false, err_type("Constant definition", "table", type(result))
+        return false, errors.bad_value_msg("Constant definition", "table", type(result))
     end
 
     for k, v in pairs(result) do
         if type(k) ~= "string" then
-            return false, err_type("Constant group names", "string", type(k)), tostring(k)
+            return false, errors.bad_value_msg("Constant group names", "string", type(k)), tostring(k)
         end
 
         if not is_valid_name(k) then
@@ -27,7 +25,7 @@ return function(result)
         local value_index = {}
         for kk, vv in pairs(v) do
             if type(kk) ~= "string" then
-                return false, err_type("Constant names", "string", type(kk)), k .. "." .. tostring(kk)
+                return false, errors.bad_value_msg("Constant names", "string", type(kk)), k .. "." .. tostring(kk)
             end
 
             if not is_valid_name(kk) then
