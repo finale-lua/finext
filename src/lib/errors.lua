@@ -160,4 +160,31 @@ function errors.create_handler(opt)
     return func
 end
 
+---Creates a bad argument error message
+---@param func_name string? Name of function or nil to use placeholder.
+---@param arg_num number Argument number
+---@param expected string|string[] Expected type(s)/value(s)
+---@param given string The given value or type
+---@return string
+function errors.bad_argument_msg(func_name, arg_num, expected, given)
+    if type(expected) == "table" then
+        expected = table.concat(expected, " or ")
+    end
+
+    return "bad argument #" .. arg_num .. " to '" .. (func_name or function_name_placeholder) .. "' (" .. expected .. " expected, " .. given .. " given)"
+end
+
+---Creates a bad value error message
+---@param name string The name of the item.
+---@param expected string|string[] Expected type(s)/value(s)
+---@param given string Given value/type.
+---@return string
+function errors.bad_value_msg(name, expected, given)
+    if type(expected) == "table" then
+        expected = table.concat(expected, " or ")
+    end
+
+    return name .. " must be a " .. expected .. ", " .. given .. " given"
+end
+
 return errors
