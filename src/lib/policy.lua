@@ -2,6 +2,10 @@ local utils = require("lib.utils")
 local helper = require("lib.helper")
 local policy = {}
 
+local extension_metamethods = utils.create_lookup({
+    "__tostring",
+})
+
 local reserved_instance = {
     ExtClassName = function(class)
         return class.ClassName
@@ -71,6 +75,13 @@ function policy.is_valid_property_name(name)
     end
 
     return true
+end
+
+---Checks if a metamethod is allowed in extensions
+---@param method_name string
+---@return boolean
+function policy.is_allowed_metamethod(method_name)
+    return extension_metamethods[method_name] and true or false
 end
 
 return policy
