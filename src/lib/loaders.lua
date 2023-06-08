@@ -33,7 +33,7 @@ local function is_valid_extension_key(key)
     return false
 end
     
-function loaders.create_extension_loader(paths, default_getter, parser, validator, exclude_external_files)
+function loaders.create_extension_loader(paths, parser, validator, exclude_external_files)
     return setmetatable({}, {
         __index = function(t, k)
             if not is_valid_extension_key(k) then
