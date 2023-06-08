@@ -100,7 +100,7 @@ local function message_handler(original_msg)
 
     -- Move argument numbers down by one for bad argument errors if method call
     if opt.argnum then
-        if level == catch_level and errors.is_bad_argument_error(msg) then
+        if level == catch_level and errors.is_bad_argument_msg(msg) then
             local argnum = tonumber(string.match(msg, "#(%d+)")) - 1
             msg = string.gsub(msg, "#%d+", "#" .. argnum, 1)
         end
@@ -134,10 +134,10 @@ function errors.function_name_placeholder()
     return function_name_placeholder
 end
 
----Determines if an error is bad argument error.
+---Determines if an error message is a bad argument error.
 ---@param msg string
 ---@return boolean
-function errors.is_bad_argument_error(msg)
+function errors.is_bad_argument_msg(msg)
     return string.match(msg, "^bad argument #%d+ to '") and true or false
 end
 
