@@ -1,3 +1,5 @@
+local helper = require("lib.helper")
+local errors = require("lib.errors")
 local loaders = {}
 
 local function error_suffix(path, sub_path)
@@ -23,10 +25,18 @@ local function try_require(mod_name, exclude_external_files)
     return require_error_handler(require, mod_name)
 end
 
-function loaders.create_lazy_loader(paths, key_validator, default_getter, parser, validator, exclude_external_files)
+local function is_valid_extension_key(key)
+    if helper.is_xfx_class_name(key) or (helper.is_xfc_class_name(key) and finale[helper.xfc_to_fc_class_name(key)]) then
+        return true
+    end
+
+    return false
+end
+    
+function loaders.create_extension_loader(paths, default_getter, parser, validator, exclude_external_files)
     return setmetatable({}, {
         __index = function(t, k)
-            if not key_validator(k) then
+            if not is_valid_extension_key(k) then
                 return nil
             end
 
@@ -40,8 +50,8 @@ function loaders.create_lazy_loader(paths, key_validator, default_getter, parser
                 end
             end
 
-            if result == nil then
-                result = default_getter(k)
+            if result == nil and helper.is_xfc_class_name(k) then
+                result = {}
             end
 
             if result ~= nil then
