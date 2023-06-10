@@ -42,12 +42,16 @@ function utils.create_lookup(t)
     return tt
 end
 
----Copies all key/value pairs from t1 into t2, overriding any existing values.
+---Copies all key/value pairs from t1 into t2, overriding any existing values or combining if both values are tables.
 ---@param t1 table
 ---@param t2 table
 function utils.copy_into(t1, t2)
     for k, v in pairs(t1) do
-        t2[k] = v
+        if type(v) == "table" and type(t2[k]) == "table" then
+            utils.copy_into(v, t2[k])
+        else
+            t2[k] = v
+        end
     end
 end
 
