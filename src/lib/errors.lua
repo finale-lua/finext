@@ -138,10 +138,10 @@ end
 ---@param opt table
 ---@return function
 -- backtrace is always added
--- rethrow (boolean)
--- argnum (boolean)
--- rename (boolean)
--- rewriters (function[])
+-- rethrow (boolean) rethrow error one level up
+-- argnum (boolean) shift argument numbers down if next level is method call
+-- rename (boolean) replace placeholder with function name from next level
+-- rewriters (function[]) additional custom rewriters which will be called before any other replacements are made
 function errors.create_handler(opt)
     local func = function(tryfunczzz, ...)
         return result_handler(xpcall(catch_error, message_handler, tryfunczzz, ...))
