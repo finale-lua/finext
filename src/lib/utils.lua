@@ -47,8 +47,12 @@ end
 ---@param t2 table
 function utils.copy_into(t1, t2)
     for k, v in pairs(t1) do
-        if type(v) == "table" and type(t2[k]) == "table" then
-            utils.copy_into(v, t2[k])
+        if type(v) == "table" then
+            if type(t2[k]) == "table" then
+                utils.copy_into(v, t2[k])
+            else
+                t2[k] = utils.copy_table(v)
+            end
         else
             t2[k] = v
         end
