@@ -134,13 +134,6 @@ function errors.function_name_placeholder()
     return function_name_placeholder
 end
 
----Determines if an error message is a bad argument error.
----@param msg string
----@return boolean
-function errors.is_bad_argument_msg(msg)
-    return string.match(msg, "^bad argument #%d+ to '") and true or false
-end
-
 ---Creates an error handler.
 ---@param opt table
 ---@return function
@@ -172,6 +165,22 @@ function errors.bad_argument_msg(func_name, arg_num, expected, given)
     end
 
     return "bad argument #" .. arg_num .. " to '" .. (func_name or function_name_placeholder) .. "' (" .. expected .. " expected, " .. given .. " given)"
+end
+
+---Determines if an error message is a bad argument error.
+---@param msg string
+---@return boolean
+function errors.is_bad_argument_msg(msg)
+    return string.match(msg, "^bad argument #%d+ to '") and true or false
+end
+
+---Returns the argument number from a bad argument error message.
+---@param msg string
+---@return number? nil if not a bad argument error message.
+function errors.get_bad_argument_number(msg)
+    if errors.is_bad_argument_msg(msg) then
+        return tointeger(string.match(msg, "#(%d+)"))
+    end
 end
 
 ---Creates a bad value error message
