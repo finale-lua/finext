@@ -82,8 +82,8 @@ local function message_handler(original_msg)
     end
 
     -- Call custom rewriters
-    if opt.custom then
-        for _, v in ipairs(opt.custom) do
+    if opt.rewriters then
+        for _, v in ipairs(opt.rewriters) do
             msg = v(msg, level + 1)
             if msg == nil then
                 return
@@ -141,13 +141,13 @@ end
 -- rethrow (boolean)
 -- argnum (boolean)
 -- rename (boolean)
--- custom (function[])
+-- rewriters (function[])
 function errors.create_handler(opt)
     local func = function(tryfunczzz, ...)
         return result_handler(xpcall(catch_error, message_handler, tryfunczzz, ...))
     end
-    if type(opt.custom) == "function" then
-        opt.custom = {opt.custom}
+    if type(opt.rewriters) == "function" then
+        opt.rewriters = {opt.rewriters}
     end
     handlers[func] = opt
     return func
