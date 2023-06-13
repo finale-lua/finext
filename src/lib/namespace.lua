@@ -361,8 +361,7 @@ Returns an extension-wrapped UI object from `finenv.UI`
         return object_extensions[finenv.UI()]
     end
 
-    local namespace = {}
-    namespace.namespace = setmetatable({}, {
+    local namespace = setmetatable({}, {
         __newindex = function(t, k, v) end,
         __index = function(t, k)
             if not public[k] then
@@ -413,9 +412,9 @@ Returns an extension-wrapped UI object from `finenv.UI`
         end,
     })
 
-    function namespace.is_extension(value)
+    local function is_extension(value)
         return extension_objects[value] and true or false
     end
 
-    return namespace
+    return namespace, is_extension
 end
