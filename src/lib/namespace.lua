@@ -381,7 +381,7 @@ Returns an extension-wrapped UI object from `finenv.UI`
                 -- @TODO Check that FC is callable...
                 if helper.is_xfc_class_name(class_name) then
                     metatable.__call = function(tt, ...)
-                        return object_extensions(errors.rethrow(finale[helper.xfc_to_fc_class_name(k)], ...))
+                        return object_extensions(handle_bridge_function(finale[helper.xfc_to_fc_class_name(k)], ...))
                     end
                 else
                     metatable.__call = function(tt, ...)
